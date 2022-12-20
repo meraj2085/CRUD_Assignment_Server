@@ -17,8 +17,8 @@ async function run(){
           const UsersCollection = client.db("CRUD_Assignment").collection("users");
 
           app.put('/user', async (req, res) => {
-               const newUSer = req.body;
-               const result = await UsersCollection.insertOne(newUSer)
+               const newUser = req.body;
+               const result = await UsersCollection.insertOne(newUser)
                res.send(result)
           })
 
@@ -32,6 +32,21 @@ async function run(){
                const id = req.params.id;
                const filter = { _id: ObjectId(id) };
                const result = await UsersCollection.deleteOne(filter);
+               res.send(result);
+          });
+
+          app.put("/users/:id", async (req, res) => {
+               const id = req.params.id;
+               const updatedUser = req.body;
+               const filter = { _id: ObjectId(id) };
+               const options = { upsert: true };
+               const updatedDoc = {
+                 $set: {
+                    name: updatedUser?.name,
+                    email: updatedUser?.email,
+                 },
+               };
+               const result = await UsersCollection.updateOne(filter,updatedDoc,options);
                res.send(result);
           });
      }
