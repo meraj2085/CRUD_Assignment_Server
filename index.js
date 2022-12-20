@@ -1,7 +1,7 @@
 const express = require('express');
 const cors = require('cors');
 require('dotenv').config();
-const { MongoClient, ServerApiVersion } = require('mongodb');
+const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 const app = express();
 const port = process.env.PORT || 5000;
 
@@ -17,10 +17,18 @@ async function run(){
           const UsersCollection = client.db("CRUD_Assignment").collection("users");
 
           app.put('/user', async (req, res) => {
-               const newUSer = {name: 'Meraj', email: 'samirmeraj60@gmail.com'}
+               const newUSer = req.body;
                const result = await UsersCollection.insertOne(newUSer)
                res.send(result)
           })
+
+          app.get('/users', async(req, res)=>{
+               const query = {};
+               const result = await UsersCollection.find(query).toArray();
+               res.send(result)
+          })
+
+          
      }
      finally{}
 }
